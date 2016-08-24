@@ -17,13 +17,12 @@ local function error_result(msg, status)
 end
 
 -- local cjson = require "cjson"
-local red = require "resty.redis"
-local redis = red:new()
+local redis = require "resty.redis"
 local res, err, key, i, records
 
-redis:set_timeout(100)
-
 -- connect to redis
+redis = redis:new()
+redis:set_timeout(100)
 if not ngx.var.redis_port then
     res, err = redis:connect(ngx.var.redis_host)
 else
