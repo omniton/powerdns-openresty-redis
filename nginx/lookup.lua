@@ -16,26 +16,26 @@ local function error_result(msg, status)
     ngx.exit(ngx.status)
 end
 
--- local cjson = require "cjson"
 local redis = require "resty.redis"
-local res, err, key, i, records
+local res, err, key, i, records, rec_type, match
 
 -- connect to redis
 redis = redis:new()
 redis:set_timeout(100)
-if not ngx.var.redis_port then
-    res, err = redis:connect(ngx.var.redis_host)
-else
+if ngx.var.redis_port and ngx.var.redis_port then
     res, err = redis:connect(ngx.var.redis_host, ngx.var.redis_port)
+elseif ngx.var.redis_unix then
+    res, err = redis:connect(ngx.var.redis_unix)
 end
 if not res then error_result('failed redis connect', 500) end
 
--- switch to db
+-- select db
 if ngx.var.redis_db then redis:select(ngx.var.redis_db) end
 
 -- get all keys matched name/*
-if ngx.var.type == 'ANY' then
-    local match = ngx.var.name .. '/*'
+rec_type = string.upper(ngx.var.rec_type)
+if rec_type == 'ANY' then
+    match = ngx.var.name .. '/*'
     if match:sub(1,1) == '*' then match = '\\' .. match end
     res, err = redis:keys(match)
     if not res[1] then error_result('record not found', 404) end
@@ -51,6 +51,6 @@ if ngx.var.type == 'ANY' then
 end
 
 -- get records for key name/type
-records, err = redis:lrange(ngx.var.name .. "/" .. ngx.var.type, 0, 1000)
+records, err = redis:lrange(ngx.var.name .. "/" .. rec_type, 0, 1000)
 if not records[1] then error_result('record not found', 404) end
 return_result(records)
