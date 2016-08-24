@@ -22,7 +22,7 @@ local res, err, key, i, records, rec_type, match
 -- connect to redis
 redis = redis:new()
 redis:set_timeout(100)
-if ngx.var.redis_port and ngx.var.redis_port then
+if ngx.var.redis_host and ngx.var.redis_port then
     res, err = redis:connect(ngx.var.redis_host, ngx.var.redis_port)
 elseif ngx.var.redis_unix then
     res, err = redis:connect(ngx.var.redis_unix)
