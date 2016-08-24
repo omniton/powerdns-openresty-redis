@@ -3,10 +3,10 @@
 1. Prepare host server environment (ubuntu version script: install/ubuntu-prepare-environment.sh)
 2. Download & extract latest openresty tarball (http://openresty.org/en/download.html)
 3. Copy installation script into extracted openresty folder and run.
-4. Copy mginx/powerdns.conf to /etc/nginx/sites-enabled folder
+4. Copy nginx/powerdns.conf to /etc/nginx/sites-enabled folder (uncomment set $redis_host and set $redis_port)
 5. Copy nginx/lookup.lua to /usr/local/openresty/nginx folder
 6. Restart nginx: ```/etc/init.d/nginx```
-7. Install redis server (apt install redis-server)
+7. Install redis server: ```apt install redis-server```
 8. Install PowerDNS server: ```apt install pdns-server pdns-backend-remote```
 9. Copy powerdns/pdns.local.conf to /etc/powerdns/pdns.d folder
 10. Restart pdns server: ```/etc/init.d/pdns restart```
