@@ -29,6 +29,12 @@ elseif ngx.var.redis_unix then
 end
 if not res then error_result('failed redis connect', 500) end
 
+-- redis authentication
+if ngx.var.redis_auth then
+    res, err = redis:auth(ngx.var.redis_auth)
+    if not res then error_result('wrong authentication', 403) end
+end
+
 -- select db
 if ngx.var.redis_db then redis:select(ngx.var.redis_db) end
 
@@ -38,7 +44,7 @@ if rec_type == 'ANY' then
     match = ngx.var.name .. '/*'
     if match:sub(1,1) == '*' then match = '\\' .. match end
     res, err = redis:keys(match)
-    if not res[1] then error_result('record not found', 404) end
+    if not res or not res[1] then error_result('record not found', 404) end
 
     records = {}
     for i, key in ipairs(res) do
@@ -52,5 +58,5 @@ end
 
 -- get records for key name/type
 records, err = redis:lrange(ngx.var.name .. "/" .. rec_type, 0, 1000)
-if not records[1] then error_result('record not found', 404) end
+if not records or not records[1] then error_result('record not found', 404) end
 return_result(records)
