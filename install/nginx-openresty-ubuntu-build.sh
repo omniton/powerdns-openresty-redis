@@ -20,7 +20,6 @@
 --with-http_gzip_static_module \
 --with-http_realip_module \
 --with-http_ssl_module \
---with-http_redis2_module \
 --with-http_stub_status_module \
 --with-http_secure_link_module \
 --with-http_sub_module
