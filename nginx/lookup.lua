@@ -41,7 +41,7 @@ if ngx.var.redis_db then redis:select(ngx.var.redis_db) end
 -- get all keys matched name/*
 rec_type = string.upper(ngx.var.rec_type)
 if rec_type == 'ANY' then
-    match = ngx.var.name .. '/*'
+    match = string.lower(ngx.var.name) .. '/*'
     if match:sub(1,1) == '*' then match = '\\' .. match end
     res, err = redis:keys(match)
     if not res or not res[1] then error_result('record not found', 404) end
@@ -57,6 +57,6 @@ if rec_type == 'ANY' then
 end
 
 -- get records for key name/type
-records, err = redis:lrange(ngx.var.name .. "/" .. rec_type, 0, 1000)
+records, err = redis:lrange(string.lower(ngx.var.name) .. "/" .. rec_type, 0, 1000)
 if not records or not records[1] then error_result('record not found', 404) end
 return_result(records)
