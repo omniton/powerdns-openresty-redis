@@ -12,7 +12,7 @@ end
 local function error_result(msg, status)
     ngx.status = status
     ngx.say('{"result":false, "error":"', msg, '"}')
-    ngx.log(ngx.ERR, msg)
+    -- ngx.log(ngx.ERR, msg)
     ngx.exit(ngx.status)
 end
 
